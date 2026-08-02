@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="theme-color" content="#07111f" />
+<title>Captain Chaos</title>
+<style>
+:root{
+  --ink:#eef6ff; --muted:#a8bed3; --panel:#0b1828dd; --panel2:#10253a;
+  --cyan:#52dbff; --green:#65f59a; --amber:#ffc85b; --red:#ff6a6a; --purple:#b88cff;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#07111f;color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button{font:inherit}
+#app{position:relative;width:100%;height:100dvh;overflow:hidden;background:
+ radial-gradient(circle at 50% 10%,#2e88c7 0 18%,#143a64 38%,#07111f 75%)}
+.sky{position:absolute;inset:0;overflow:hidden}
+.stars{position:absolute;inset:0;background-image:
+ radial-gradient(circle,#fff 0 1px,transparent 1.4px),
+ radial-gradient(circle,#fff 0 1px,transparent 1.4px);
+ background-size:70px 70px,110px 110px;background-position:0 0,20px 35px;opacity:.18}
+.cloud{position:absolute;width:240px;height:70px;border-radius:60px;background:#fff8;filter:blur(1px);animation:cloudMove 18s linear infinite}
+.cloud:before,.cloud:after{content:"";position:absolute;border-radius:50%;background:inherit}
+.cloud:before{width:90px;height:90px;left:34px;top:-38px}.cloud:after{width:120px;height:110px;right:28px;top:-55px}
+.c1{left:-280px;top:18%;animation-duration:20s}.c2{left:35%;top:32%;transform:scale(.7);animation-duration:28s}.c3{left:75%;top:10%;transform:scale(.45);animation-duration:35s}
+@keyframes cloudMove{to{transform:translateX(140vw)}}
+#aurora{position:absolute;inset:-20%;background:conic-gradient(from 90deg at 50% 50%,transparent,#70ffd733,transparent,#a578ff44,transparent);filter:blur(35px);animation:aurora 11s ease-in-out infinite alternate}
+@keyframes aurora{to{transform:rotate(8deg) scale(1.08)}}
+#planeScene{position:absolute;left:50%;top:39%;width:min(70vw,850px);height:min(26vw,300px);transform:translate(-50%,-50%);filter:drop-shadow(0 30px 25px #0008);transition:transform .7s ease}
+#planeSvg{width:100%;height:100%}
+#eventSprite{position:absolute;left:50%;top:34%;transform:translate(-50%,-50%);width:min(28vw,330px);height:min(28vw,330px);pointer-events:none;animation:float 3s ease-in-out infinite}
+@keyframes float{50%{transform:translate(-50%,-54%) rotate(2deg)}}
+#cockpit{position:absolute;left:0;right:0;bottom:0;height:43%;background:linear-gradient(#1a2635,#09121d 25%,#03070c);clip-path:polygon(0 13%,9% 0,91% 0,100% 13%,100% 100%,0 100%);border-top:4px solid #4c5e72}
+.glareshield{position:absolute;left:18%;right:18%;top:8%;height:58px;border-radius:14px 14px 7px 7px;background:linear-gradient(#26384b,#0d1722);border:2px solid #51657a;display:grid;grid-template-columns:repeat(5,1fr);gap:6px;padding:7px}
+.mcp{background:#05090d;border:1px solid #53616f;border-radius:5px;text-align:center;font-family:"Courier New",monospace;color:var(--green);padding:4px}
+.mcp small{display:block;color:#a4b1bd;font:8px Arial;letter-spacing:.1em}
+.screens{position:absolute;left:7%;right:7%;top:30%;bottom:7%;display:grid;grid-template-columns:1fr 1.15fr 1fr;gap:12px}
+.screen{background:#031016;border:5px solid #303c49;border-radius:12px;box-shadow:inset 0 0 30px #000;overflow:hidden;position:relative}
+.pfd{background:linear-gradient(#2d91ce 0 48%,#eee 48% 49%,#8d552c 49% 100%)}
+.pfd:after{content:"";position:absolute;left:18%;right:18%;top:48%;height:3px;background:white}
+.pitch{position:absolute;left:50%;top:48%;transform:translate(-50%,-50%);font-size:36px;color:#ffd73f}
+.nd{background:radial-gradient(circle at 50% 100%,#123a29,#031016 65%);color:#8aff9d;font-family:"Courier New",monospace}
+.arc{position:absolute;left:10%;right:10%;bottom:-25%;height:95%;border:2px solid #63f78e;border-radius:50%}
+.route{position:absolute;left:15%;right:15%;top:20%;bottom:10%}
+.route:before{content:"";position:absolute;left:15%;top:55%;width:65%;height:3px;background:#ff4dff;transform:rotate(-14deg);box-shadow:0 0 8px #ff4dff}
+.engine{padding:12px;color:#7dff8e;font-family:"Courier New",monospace}
+.dial{width:75px;height:75px;border:4px solid #4aff72;border-radius:50%;margin:7px auto;display:flex;align-items:center;justify-content:center;font-size:18px}
+#hud{position:absolute;inset:max(10px,env(safe-area-inset-top)) max(10px,env(safe-area-inset-right)) auto max(10px,env(safe-area-inset-left));display:grid;grid-template-columns:1fr auto 1fr;gap:10px;z-index:10}
+.logo,.meters,.round{background:#081421d9;border:1px solid #52657a;border-radius:12px;padding:10px 13px;backdrop-filter:blur(12px)}
+.logo{font-weight:1000;letter-spacing:.08em}.logo span{color:var(--cyan)}
+.round{text-align:center;font-size:13px;color:#c6d5e3}
+.meters{display:flex;gap:14px;justify-content:flex-end}
+.meter{font-size:10px;color:#a9bbca;text-align:center}.bar{width:86px;height:8px;border-radius:10px;background:#263747;overflow:hidden;margin-top:4px}.fill{height:100%;transition:width .5s ease}
+#calmFill{background:var(--green)}#safeFill{background:var(--cyan)}#weirdFill{background:var(--purple)}
+#storyPanel{position:absolute;z-index:12;left:50%;bottom:4%;transform:translateX(-50%);width:min(94vw,920px);max-height:42vh;background:linear-gradient(180deg,#0e2032f2,#07111cf5);border:1px solid #5a7086;border-radius:20px;padding:18px;box-shadow:0 20px 80px #000a;backdrop-filter:blur(16px)}
+#tag{display:inline-block;background:#183952;color:#7ce3ff;border:1px solid #3e6c89;border-radius:999px;padding:5px 9px;font-size:11px;font-weight:800;letter-spacing:.08em}
+#scenarioTitle{font-size:clamp(24px,4vw,40px);margin:8px 0 4px;line-height:1}
+#scenarioText{font-size:clamp(14px,2vw,18px);line-height:1.42;color:#d5e0e9;margin:0 0 12px}
+#choices{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.choice{border:1px solid #557087;background:linear-gradient(#17324a,#0e2032);color:#fff;border-radius:14px;padding:13px;text-align:left;min-height:98px;cursor:pointer;transition:.2s;box-shadow:inset 0 -5px #0003}
+.choice:hover{transform:translateY(-3px);border-color:#7de5ff}.choice:active{transform:translateY(1px)}
+.choice b{display:block;color:#7de5ff;margin-bottom:5px}.choice span{font-size:12px;color:#c3d1dc;line-height:1.35}
+#result{display:none;border-left:4px solid var(--cyan);background:#091724;padding:12px;border-radius:8px;margin-top:10px;line-height:1.4}
+#nextBtn{display:none;width:100%;margin-top:10px;padding:13px;border:none;border-radius:12px;background:var(--green);color:#06120a;font-weight:900}
+#overlay{position:absolute;inset:0;z-index:30;background:#04101af2;display:flex;align-items:center;justify-content:center;padding:20px}
+.card{width:min(92vw,760px);max-height:92vh;overflow:auto;background:linear-gradient(150deg,#132c43,#08141f);border:1px solid #607b94;border-radius:22px;padding:26px;box-shadow:0 30px 100px #000}
+.card h1{font-size:clamp(34px,7vw,70px);line-height:.9;margin:0 0 12px}.card h1 span{color:var(--cyan)}
+.card p{font-size:17px;line-height:1.5;color:#d4e0e9}.card .brief{background:#07131f;border-left:4px solid var(--purple);padding:13px;margin:14px 0;border-radius:7px}
+.start{width:100%;padding:16px;border:none;border-radius:13px;background:linear-gradient(90deg,var(--green),var(--cyan));font-weight:1000;font-size:19px;color:#061219}
+#captainRank{font-size:clamp(28px,5vw,48px);color:var(--amber);font-weight:1000}
+@media(max-width:760px){
+ #app{min-height:640px}
+ #hud{grid-template-columns:1fr auto}.meters{grid-column:1/-1;justify-content:center}.bar{width:70px}
+ #planeScene{top:30%;width:90vw;height:36vw}.eventSprite{top:27%;width:36vw;height:36vw}
+ #cockpit{height:46%}.screens{gap:5px}.screen{border-width:3px}.glareshield{left:8%;right:8%;height:48px}.mcp{font-size:11px}
+ #storyPanel{bottom:2%;max-height:50vh;padding:12px;border-radius:14px}
+ #scenarioTitle{font-size:24px}#scenarioText{font-size:13px}
+ #choices{grid-template-columns:1fr;max-height:230px;overflow:auto}.choice{min-height:72px;padding:10px}
+}
+@media(orientation:portrait){
+ #planeScene{top:25%}.eventSprite{top:23%}
+ #cockpit{height:51%}
+ #storyPanel{max-height:48vh}
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="sky">
+    <div class="stars"></div><div id="aurora"></div>
+    <div class="cloud c1"></div><div class="cloud c2"></div><div class="cloud c3"></div>
+  </div>
+
+  <div id="hud">
+    <div class="logo">CAPTAIN <span>CHAOS</span></div>
+    <div class="round" id="round">SCENARIO 1 / 8</div>
+    <div class="meters">
+      <div class="meter">CALM<div class="bar"><div class="fill" id="calmFill"></div></div></div>
+      <div class="meter">SAFETY<div class="bar"><div class="fill" id="safeFill"></div></div></div>
+      <div class="meter">CREATIVITY<div class="bar"><div class="fill" id="weirdFill"></div></div></div>
+    </div>
+  </div>
+
+  <div id="planeScene">
+    <svg id="planeSvg" viewBox="0 0 1000 300" aria-label="airliner">
+      <defs>
+        <linearGradient id="body" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#f8fbff"/><stop offset="1" stop-color="#9fb1c3"/></linearGradient>
+        <linearGradient id="wing" x1="0" x2="1"><stop stop-color="#d8e2ec"/><stop offset="1" stop-color="#788b9e"/></linearGradient>
+      </defs>
+      <ellipse cx="495" cy="250" rx="370" ry="28" fill="#0005"/>
+      <path d="M100 135 Q180 85 720 95 Q860 98 930 135 Q865 170 720 174 L175 175 Q118 165 100 135Z" fill="url(#body)" stroke="#52677c" stroke-width="4"/>
+      <path d="M430 150 L710 260 L780 250 L610 145Z" fill="url(#wing)" stroke="#52677c" stroke-width="4"/>
+      <path d="M410 146 L190 250 L125 241 L260 139Z" fill="url(#wing)" stroke="#52677c" stroke-width="4"/>
+      <path d="M760 104 L850 35 L880 38 L842 119Z" fill="url(#wing)" stroke="#52677c" stroke-width="4"/>
+      <path d="M780 108 L915 72 L940 85 L846 128Z" fill="url(#wing)" stroke="#52677c" stroke-width="4"/>
+      <ellipse cx="530" cy="202" rx="55" ry="30" fill="#54697d"/><ellipse cx="520" cy="202" rx="34" ry="22" fill="#0a1621"/>
+      <ellipse cx="675" cy="204" rx="55" ry="30" fill="#54697d"/><ellipse cx="665" cy="204" rx="34" ry="22" fill="#0a1621"/>
+      <path d="M130 126 Q165 104 225 101" fill="none" stroke="#11293d" stroke-width="10" stroke-linecap="round"/>
+      <g fill="#16354c">
+        <rect x="250" y="116" width="22" height="10" rx="4"/><rect x="285" y="115" width="22" height="10" rx="4"/>
+        <rect x="320" y="114" width="22" height="10" rx="4"/><rect x="355" y="113" width="22" height="10" rx="4"/>
+        <rect x="390" y="112" width="22" height="10" rx="4"/><rect x="425" y="111" width="22" height="10" rx="4"/>
+        <rect x="460" y="110" width="22" height="10" rx="4"/><rect x="495" y="109" width="22" height="10" rx="4"/>
+        <rect x="530" y="108" width="22" height="10" rx="4"/><rect x="565" y="107" width="22" height="10" rx="4"/>
+        <rect x="600" y="106" width="22" height="10" rx="4"/><rect x="635" y="105" width="22" height="10" rx="4"/>
+      </g>
+    </svg>
+  </div>
+
+  <div id="eventSprite"></div>
+
+  <div id="cockpit">
+    <div class="glareshield">
+      <div class="mcp"><small>COURSE</small>274</div><div class="mcp"><small>IAS</small>250</div>
+      <div class="mcp"><small>HDG</small>091</div><div class="mcp"><small>ALT</small>10000</div>
+      <div class="mcp"><small>V/S</small>0000</div>
+    </div>
+    <div class="screens">
+      <div class="screen pfd"><div class="pitch">—⌄—</div></div>
+      <div class="screen nd"><div class="arc"></div><div class="route"></div></div>
+      <div class="screen engine"><div>N1 ENG 1</div><div class="dial">88.4</div><div>N1 ENG 2</div><div class="dial">88.1</div></div>
+    </div>
+  </div>
+
+  <div id="storyPanel">
+    <div id="tag">UNUSUAL SITUATION</div>
+    <h2 id="scenarioTitle"></h2>
+    <p id="scenarioText"></p>
+    <div id="choices"></div>
+    <div id="result"></div>
+    <button id="nextBtn">NEXT SCENARIO</button>
+  </div>
+
+  <div id="overlay">
+    <div class="card" id="card">
+      <h1>CAPTAIN <span>CHAOS</span></h1>
+      <p>You are the captain of Flight 404: a perfectly serviceable airliner operating in a universe that is not remotely serviceable.</p>
+      <div class="brief">Make decisions that protect the aircraft, calm the cabin and solve ridiculous problems with gloriously unorthodox thinking.</div>
+      <p>Every choice changes your <b>Calm</b>, <b>Safety</b> and <b>Creativity</b> scores. The best answer is rarely the dullest one—but the funniest answer is not always the safest.</p>
+      <button class="start" id="startBtn">TAKE COMMAND</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const scenarios=[
+{
+ title:"The Octopus in 3A",
+ text:"A furious octopus has escaped from an aquarium shipment, occupied seat 3A and is now slapping anyone who approaches with eight separate copies of the safety card.",
+ art:"octopus",
+ choices:[
+  {t:"Promote it to Cabin Manager",d:"Give it a hi-vis vest and authority over the trolley service.",s:[8,4,10],r:"The octopus immediately enforces perfect cabin discipline. Unfortunately, it also introduces an eight-drink minimum."},
+  {t:"Turn the cabin lights blue",d:"Dim the cabin, play whale sounds and tempt it into a galley sink.",s:[7,9,8],r:"It calms down, relocates to the sink and accepts two prawns as landing fees. Excellent non-confrontational command."},
+  {t:"Open the door and point outside",d:"Hope it understands subtle hints.",s:[-8,-12,2],r:"The octopus refuses. The purser also asks whether you have read literally any operating manual."}
+ ]},
+{
+ title:"The Wing Has Fallen Off",
+ text:"The right wing has detached. Coincidentally, every passenger is travelling to a superhero convention and is wearing a large cape.",
+ art:"cape",
+ choices:[
+  {t:"Build a giant drag parachute",d:"Tie the capes together and deploy them from the missing-wing side to control roll.",s:[2,8,10],r:"The improvised drag device reduces the roll enough for a heroic landing. The capes are ruined, but the cosplay society votes you Captain of the Year."},
+  {t:"Ask everyone to lean left",d:"Use passenger weight as an aerodynamic control input.",s:[-2,3,6],r:"It helps slightly, but 186 people arguing about which side is left causes more yaw than the missing wing."},
+  {t:"Pretend you have not noticed",d:"Maintain a calm cockpit atmosphere by refusing to acknowledge reality.",s:[9,-14,-4],r:"Your calmness is impressive. Your aerodynamics are not."}
+ ]},
+{
+ title:"The Cloud Is Custard",
+ text:"Weather radar shows a solid yellow return. It is not precipitation. It is an airborne custard bank stretching sixty miles across your route.",
+ art:"custard",
+ choices:[
+  {t:"Climb above the skin",d:"Custard forms a denser lower layer; climb before the engines ingest dessert.",s:[5,10,6],r:"You skim the top of the custard layer in smooth air. The first officer quietly writes “avoid pudding” on the threat brief."},
+  {t:"Turn on engine anti-icing",d:"Treat the custard as a conventional icing threat.",s:[3,4,4],r:"The engines remain warm, but the aircraft emerges wearing a crème brûlée coating."},
+  {t:"Request a spoon from ATC",d:"Advise that you are unable to continue without appropriate cutlery.",s:[8,1,9],r:"ATC is unhelpful, but a nearby cargo aircraft carrying industrial spoons volunteers assistance."}
+ ]},
+{
+ title:"The Landing Gear Is Now Shopping Trolleys",
+ text:"After selecting gear down, three supermarket trolleys extend from the wheel wells. One has a wobbly wheel.",
+ art:"trolley",
+ choices:[
+  {t:"Land at the nearest supermarket",d:"Use the covered car park ramp as an improvised runway.",s:[3,6,10],r:"You touch down beside the trolley return bay. The store manager validates your parking for two hours."},
+  {t:"Redistribute passengers aft",d:"Reduce nosewheel loading and land as slowly as possible.",s:[4,8,5],r:"A careful low-speed landing works. The wobbly wheel pulls left toward the bakery but stops beside the baguettes."},
+  {t:"Ask for a runway with no coin deposit",d:"Avoid any airport requiring a one-dirham trolley token.",s:[6,2,7],r:"Operations confirms all available runways are token-free. This does not solve the structural issue."}
+ ]},
+{
+ title:"A Goose Has Declared Itself ATC",
+ text:"A large goose is flying formation beside the cockpit and issuing increasingly confident clearances by honking in Morse code.",
+ art:"goose",
+ choices:[
+  {t:"Read back the clearance",d:"Acknowledge the goose and verify it against actual ATC.",s:[7,8,6],r:"The goose's clearance is surprisingly accurate. Actual ATC sounds offended but confirms the routing."},
+  {t:"Offer it the jumpseat",d:"Bring the goose inside where its instructions can be properly challenged.",s:[4,5,9],r:"It accepts, completes the paperwork with a beak mark and immediately critiques your energy management."},
+  {t:"Squawk 7600",d:"Assume all human communications have failed because a goose is speaking.",s:[-2,1,4],r:"Communications were fine. Everyone now believes you lost radio contact because of a bird with management ambitions."}
+ ]},
+{
+ title:"The Moon Wants to Inspect Your Passport",
+ text:"At FL370, the Moon descends to the left window and announces that you have entered lunar airspace without the correct visa.",
+ art:"moon",
+ choices:[
+  {t:"Declare innocent passage",d:"Quote international aviation law with total confidence.",s:[8,5,8],r:"The Moon cannot find the relevant clause and waves you through while pretending this was always its intention."},
+  {t:"Offer the tech log",d:"Distract the Moon with several hundred pages of deferred defects.",s:[6,7,9],r:"The Moon spends forty minutes reading about a broken coffee-maker and forgets the inspection."},
+  {t:"Divert to Mars",d:"Avoid the jurisdiction entirely.",s:[1,-4,7],r:"Mars requires an even more complicated arrival form and has no suitable fuel contract."}
+ ]},
+{
+ title:"The Autopilot Has Become Overconfident",
+ text:"The autopilot announces that it has watched three motivational videos and is now ready to fly a barrel roll to ‘unlock the aircraft’s potential.’",
+ art:"robot",
+ choices:[
+  {t:"Use calm CRM",d:"Acknowledge its enthusiasm, then ask it to identify the operational objective.",s:[10,9,7],r:"The autopilot realises the barrel roll has no measurable benefit and returns to LNAV, slightly embarrassed."},
+  {t:"Give it a harmless challenge",d:"Ask it to optimise the descent to save exactly one teaspoon of fuel.",s:[7,8,9],r:"It becomes completely absorbed in the calculation and forgets about aerobatics."},
+  {t:"Pull every circuit breaker",d:"Resolve the personality issue with decisive electrical isolation.",s:[-4,3,1],r:"The autopilot stops talking. So do several other systems you would quite like to have."}
+ ]},
+{
+ title:"The Runway Is Moving",
+ text:"The destination runway has grown tiny legs and is slowly walking away from the airport because it ‘needs space.’",
+ art:"runway",
+ choices:[
+  {t:"Intercept it like a moving target",d:"Calculate its speed and fly a curved final to meet it.",s:[2,7,10],r:"You touch down while the runway is still walking. It complains about your flare but agrees to stop moving."},
+  {t:"Ask airport vehicles to herd it back",d:"Use follow-me cars like sheepdogs.",s:[8,9,8],r:"The runway is gently shepherded into position. It remains emotionally distant but operationally usable."},
+  {t:"Land where it used to be",d:"Trust the chart rather than your eyes.",s:[4,-12,-4],r:"The chart is technically correct and physically useless."}
+ ]}
+];
+
+let idx=0, scores={calm:50,safe:50,weird:50}, locked=false;
+
+const art={
+octopus:`<svg viewBox="0 0 300 300"><defs><radialGradient id="o"><stop stop-color="#ff9fe6"/><stop offset="1" stop-color="#742a9b"/></radialGradient></defs><ellipse cx="150" cy="115" rx="65" ry="75" fill="url(#o)"/><circle cx="128" cy="105" r="9" fill="#fff"/><circle cx="172" cy="105" r="9" fill="#fff"/><circle cx="129" cy="107" r="4"/><circle cx="173" cy="107" r="4"/><path d="M120 145 Q150 165 180 145" fill="none" stroke="#38143d" stroke-width="7"/><g fill="none" stroke="#8d3db4" stroke-width="18" stroke-linecap="round"><path d="M100 160 Q40 190 65 255"/><path d="M120 170 Q75 220 100 275"/><path d="M140 177 Q120 235 145 285"/><path d="M160 177 Q180 235 155 285"/><path d="M180 170 Q225 220 200 275"/><path d="M200 160 Q260 190 235 255"/></g></svg>`,
+cape:`<svg viewBox="0 0 300 300"><path d="M55 55 Q150 10 245 55 L270 240 Q150 195 30 240Z" fill="#e93d58"/><path d="M55 55 Q150 95 245 55" fill="none" stroke="#ffb1bd" stroke-width="8"/><path d="M125 120 L155 85 L178 130 L220 137 L188 168 L195 211 L155 192 L118 213 L123 170 L92 138Z" fill="#ffd95a"/></svg>`,
+custard:`<svg viewBox="0 0 300 300"><path d="M20 180 Q50 100 115 130 Q150 55 205 125 Q265 110 280 190 Q255 250 40 235Z" fill="#ffd849"/><circle cx="105" cy="175" r="15" fill="#fff6"/><circle cx="190" cy="155" r="11" fill="#fff6"/><path d="M80 210 Q150 235 220 205" fill="none" stroke="#dc9d16" stroke-width="9"/></svg>`,
+trolley:`<svg viewBox="0 0 300 300"><path d="M55 65 H250 L225 195 H85Z" fill="none" stroke="#cad5df" stroke-width="12"/><path d="M55 65 L30 40" stroke="#cad5df" stroke-width="12"/><g stroke="#cad5df" stroke-width="6"><path d="M75 95 H235"/><path d="M70 125 H230"/><path d="M80 155 H225"/><path d="M105 70 V190"/><path d="M145 70 V190"/><path d="M185 70 V190"/></g><circle cx="105" cy="225" r="20" fill="#273747"/><circle cx="205" cy="225" r="20" fill="#273747"/></svg>`,
+goose:`<svg viewBox="0 0 300 300"><path d="M50 170 Q90 95 160 150 Q200 185 250 155 Q230 230 145 225 Q75 225 50 170Z" fill="#f4f4ef"/><path d="M155 150 Q150 70 195 52 Q220 42 230 60 Q205 95 195 160Z" fill="#f4f4ef"/><path d="M226 58 L270 68 L230 80Z" fill="#f4a53b"/><circle cx="210" cy="58" r="5"/><path d="M95 170 Q135 115 190 180" fill="#aeb9c4"/></svg>`,
+moon:`<svg viewBox="0 0 300 300"><circle cx="150" cy="150" r="115" fill="#e8edf2"/><circle cx="95" cy="110" r="25" fill="#bcc5ce"/><circle cx="190" cy="80" r="18" fill="#bcc5ce"/><circle cx="205" cy="180" r="33" fill="#bcc5ce"/><circle cx="115" cy="185" r="12" fill="#bcc5ce"/><circle cx="120" cy="135" r="7"/><circle cx="180" cy="135" r="7"/><path d="M115 175 Q150 150 185 175" fill="none" stroke="#5d6872" stroke-width="8"/></svg>`,
+robot:`<svg viewBox="0 0 300 300"><rect x="55" y="55" width="190" height="170" rx="30" fill="#5cccf4"/><rect x="85" y="95" width="130" height="70" rx="12" fill="#092031"/><circle cx="120" cy="130" r="12" fill="#65f59a"/><circle cx="180" cy="130" r="12" fill="#65f59a"/><path d="M105 190 H195" stroke="#092031" stroke-width="12"/><path d="M150 55 V25" stroke="#a7eaff" stroke-width="10"/><circle cx="150" cy="20" r="13" fill="#ffca4b"/></svg>`,
+runway:`<svg viewBox="0 0 300 300"><path d="M105 40 H195 L240 235 H60Z" fill="#333b45"/><path d="M145 55 H155 V90 H145ZM140 115 H160 V155 H140ZM133 180 H167 V225 H133Z" fill="#fff"/><g stroke="#333b45" stroke-width="13" stroke-linecap="round"><path d="M80 230 Q55 250 45 275"/><path d="M115 235 Q100 260 105 282"/><path d="M185 235 Q200 260 195 282"/><path d="M220 230 Q245 250 255 275"/></g></svg>`
+};
+
+function render(){
+ const s=scenarios[idx];
+ document.getElementById('scenarioTitle').textContent=s.title;
+ document.getElementById('scenarioText').textContent=s.text;
+ document.getElementById('eventSprite').innerHTML=art[s.art];
+ document.getElementById('round').textContent=`SCENARIO ${idx+1} / ${scenarios.length}`;
+ const c=document.getElementById('choices'); c.innerHTML='';
+ s.choices.forEach((ch,i)=>{
+   const b=document.createElement('button'); b.className='choice';
+   b.innerHTML=`<b>${ch.t}</b><span>${ch.d}</span>`;
+   b.onclick=()=>choose(i); c.appendChild(b);
+ });
+ document.getElementById('result').style.display='none';
+ document.getElementById('nextBtn').style.display='none';
+ locked=false; updateMeters();
+}
+function updateMeters(){
+ document.getElementById('calmFill').style.width=scores.calm+'%';
+ document.getElementById('safeFill').style.width=scores.safe+'%';
+ document.getElementById('weirdFill').style.width=scores.weird+'%';
+}
+function choose(i){
+ if(locked)return; locked=true;
+ const ch=scenarios[idx].choices[i];
+ scores.calm=Math.max(0,Math.min(100,scores.calm+ch.s[0]));
+ scores.safe=Math.max(0,Math.min(100,scores.safe+ch.s[1]));
+ scores.weird=Math.max(0,Math.min(100,scores.weird+ch.s[2]));
+ updateMeters();
+ [...document.querySelectorAll('.choice')].forEach((b,n)=>{b.disabled=true;b.style.opacity=n===i?'1':'.35'});
+ const r=document.getElementById('result'); r.style.display='block';
+ r.innerHTML=`<b>CAPTAIN'S LOG:</b> ${ch.r}<br><span style="color:#a9c2d7">Calm ${fmt(ch.s[0])} • Safety ${fmt(ch.s[1])} • Creativity ${fmt(ch.s[2])}</span>`;
+ document.getElementById('nextBtn').style.display='block';
+ document.getElementById('planeScene').style.transform=`translate(-50%,-50%) rotate(${(Math.random()-.5)*7}deg)`;
+}
+function fmt(n){return (n>=0?'+':'')+n}
+document.getElementById('nextBtn').onclick=()=>{
+ document.getElementById('planeScene').style.transform='translate(-50%,-50%)';
+ idx++;
+ if(idx>=scenarios.length) finish(); else render();
+};
+function finish(){
+ const total=scores.calm+scores.safe+scores.weird;
+ let rank="Captain of Questionable Brilliance",desc="You kept enough people alive while producing solutions no training manual had the courage to imagine.";
+ if(scores.safe>78&&scores.weird>75) {rank="Supreme Commander of Sensible Nonsense";desc="Your decisions were both gloriously creative and alarmingly effective."}
+ else if(scores.safe<45) {rank="First Officer's Personal Nightmare";desc="You displayed confidence, originality and a concerning disregard for survivability."}
+ else if(scores.calm>80) {rank="The Unflappable One";desc="Nothing disturbed you—not even events that should probably have disturbed you."}
+ else if(scores.weird>88) {rank="Chief Experimental Captain";desc="No solution was too strange, provided it could be attempted before landing."}
+ document.getElementById('card').innerHTML=`<h1>FLIGHT <span>COMPLETE</span></h1><div id="captainRank">${rank}</div><p>${desc}</p>
+ <div class="brief">Calm: <b>${scores.calm}</b><br>Safety: <b>${scores.safe}</b><br>Creativity: <b>${scores.weird}</b></div>
+ <button class="start" onclick="location.reload()">FLY AGAIN</button>`;
+ document.getElementById('overlay').style.display='flex';
+}
+document.getElementById('startBtn').onclick=()=>{document.getElementById('overlay').style.display='none';render()};
+</script>
+</body>
+</html>
